@@ -9,15 +9,15 @@
   },
   "keywords": [
     "server",
-    "express",
-    "websocket"
+    "webpack",
+    "react"
   ],
   "author": "Baldvin Smarason <bmson@bmson.com>",
   "licenses": "MIT",
   "bugs": {
     "url": "https://github.com/bmson/reqly-react/issues"
   },
-  "dependencies": {
+  "devDependencies": {
     "babel-core": "6.x.x",
     "babel-loader": "6.x.x",
     "babel-preset-es2015": "6.x.x",
