@@ -56,7 +56,6 @@ module.exports = {
     // Create server
     var webpackServer = new WebpackServer(webpack, {
 
-      publicPath: path.join(config.publicPath),
       contentBase: path.join(parent, config.publicPath),
       hot: true
 
