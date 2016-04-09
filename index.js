@@ -22,8 +22,7 @@ function getOptions(port, config) {
 
     output: {
       path: parent,
-      filename: config.publicFile,
-      publicPath: path.join(config.publicPath)
+      filename: config.publicFile
     },
 
     plugins: [hotModule],
