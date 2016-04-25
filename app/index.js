@@ -1,0 +1,117 @@
+// Dependencies
+const Webpack       = require('webpack');
+const WebpackServer = require('webpack-dev-server');
+const path          = require('path');
+const socket        = require('./socket');
+
+// Get parent directory
+const parent = path.dirname(module.parent.filename);
+
+// Split path into filepath and filename
+const splitPath = (url) => {
+
+  const lastIndex = url.lastIndexOf('/');
+
+  const filepath = url.substring(0, lastIndex);
+  const filename = url.substring(lastIndex + 1);
+
+  return { filepath, filename }
+}
+
+// Manipulate array
+const createArray = (value, fn) => {
+
+  const array = [].concat(value);
+  return array.map(item => fn.call(this, item));
+
+}
+
+// Get webpack options
+function getOptions(port, config) {
+
+  // Create hot module
+  var hotModule = new Webpack.HotModuleReplacementPlugin;
+
+  // Create server and hotloader
+  var devServer   = 'webpack-dev-server/client?http://localhost:' + port;
+  var syntaxError = 'webpack/hot/only-dev-server';
+
+  // Create entries
+  const entries = createArray(config.input, i => path.join(parent, i));
+  const entry = [devServer, syntaxError].concat(entries);
+
+  // Create output path
+  const output = splitPath(config.output);
+
+  // Create loaders
+  const includes = createArray(config.input, i => {
+    const input = splitPath(i);
+    return path.join(parent, input.filepath)
+  });
+
+  // Return config object
+  return {
+    entry: entry,
+
+    output: {
+      path: parent,
+      filename: output.filename
+    },
+
+    plugins: [hotModule],
+    devtool: 'eval',
+
+    module: {
+
+      loaders: [{
+        test: /\.js$/,
+        loaders: ['react-hot', 'babel'],
+        include: includes
+      },{
+        test: /\.jsx$/,
+        loaders: ['react-hot', 'babel'],
+        include: includes
+      }]
+
+    },
+
+    resolve: {
+      extensions: ['', '.js', '.jsx']
+    }
+  };
+
+}
+
+// Listen callback
+const connected = (port, error) => {
+
+  // Return error
+  if (error)
+    return console.error(err);
+
+    // Show success
+  console.log('Listening at http://localhost:' + port);
+
+}
+
+
+// Module definition
+exports.socket = socket.connect;
+exports.server = function(port, config) {
+
+  //
+  const output = splitPath(config.output);
+
+  // Setup webpack
+  var options = getOptions(port, config);
+  var webpack = Webpack(options);
+
+  // Create server
+  var webpackServer = new WebpackServer(webpack, {
+
+    contentBase: path.join(parent, output.filepath),
+    hot: true
+
+  }).listen(port, 'localhost', error => connected(port, error));
+
+}
