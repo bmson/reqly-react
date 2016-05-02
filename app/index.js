@@ -2,6 +2,7 @@
 const Webpack       = require('webpack');
 const WebpackServer = require('webpack-dev-server');
 const path          = require('path');
+const fs            = require('fs');
 const socket        = require('./socket');
 
 // Get parent directory
@@ -94,12 +95,24 @@ const connected = (port, error) => {
 
 }
 
-
-// Module definition
+// Create socket connection
 exports.socket = socket.connect;
+
+// Create a symlink based on the url and name
+exports.symlink = function(url, name, modules = './node_modules/') {
+
+  // Get path of application relative to modules
+  const main = path.relative(modules, url);
+
+  // Create a symlink
+  fs.symlink(main, modules + name, e => {});
+
+}
+
+// Create server
 exports.server = function(port, config) {
 
-  //
+  // split path into filepath and filename
   const output = splitPath(config.output);
 
   // Setup webpack
