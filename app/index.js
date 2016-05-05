@@ -66,12 +66,16 @@ function getOptions(port, config) {
 
       loaders: [{
         test: /\.js$/,
-        loaders: ['react-hot', 'babel'],
-        include: includes
+        include: includes,
+        loaders: ['react-hot', 'babel']
       },{
         test: /\.jsx$/,
-        loaders: ['react-hot', 'babel'],
-        include: includes
+        include: includes,
+        loaders: ['react-hot', 'babel']
+      },{
+        test: /\.css$/,
+        include: includes,
+        loader: 'style-loader!css-loader?modules&importLoaders=1&localIdentName=[path][name]-[local]___[hash:base64:5]'
       }]
 
     },
