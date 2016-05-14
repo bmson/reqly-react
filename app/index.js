@@ -105,11 +105,18 @@ exports.socket = socket.connect;
 // Create a symlink based on the url and name
 exports.symlink = function(url, name, modules = './node_modules/') {
 
+  // Split name
+  const output = splitPath(name);
+  const filepath = path.join(modules, output.filepath);
+
+  // Create directory
+  fs.mkdirSync(filepath);
+
   // Get path of application relative to modules
-  const main = path.relative(modules, url);
+  const main = path.relative(filepath, url);
 
   // Create a symlink
-  fs.symlink(main, modules + name, e => {});
+  fs.symlink(main, path.join(modules,output.filepath, output.filename), e => {});
 
 }
 
@@ -127,7 +134,8 @@ exports.server = function(port, config) {
   var webpackServer = new WebpackServer(webpack, {
 
     contentBase: path.join(parent, output.filepath),
-    hot: true
+    hot: true,
+    stats: { colors: true }
 
   }).listen(port, 'localhost', error => connected(port, error));
 
