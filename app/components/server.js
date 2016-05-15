@@ -69,14 +69,6 @@ const production = (port, { input, main }, parent) => {
   // split path into filepath and filename
   const { filepath, filename } = helpers.splitPath(main);
 
-  // Create entries
-  const entries = helpers.createArray(input, i => {
-    return path.join(parent, i);
-  });
-
-  // Create entry point
-  const entry = [DEV_SERVER + port, SYNTAX_ERROR].concat(entries);
-
   // Create includes for loaders
   const includes = helpers.createArray(input, i => {
 
@@ -86,7 +78,7 @@ const production = (port, { input, main }, parent) => {
   });
 
   // Setup webpack
-  const settings = options.production({ entry, filepath, filename, includes });
+  const settings = options.production({ filepath, filename, includes });
   const compiler = webpack(settings);
 
   compiler.run((error, stats) => {

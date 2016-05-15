@@ -39,5 +39,36 @@ const development = ({ entry, filepath, filename, includes }) => ({
 
 });
 
+const production = ({ filepath, filename, includes }) => ({
+
+    output: {
+      path: filepath,
+      filename: filename
+    },
+
+    module: {
+
+      loaders: [{
+        test: /\.js$/,
+        include: includes,
+        loaders: ['react-hot', 'babel']
+      },{
+        test: /\.jsx$/,
+        include: includes,
+        loaders: ['react-hot', 'babel']
+      },{
+        test: /\.css$/,
+        include: includes,
+        loader: 'style-loader!css-loader?modules&importLoaders=1&localIdentName=[local]-[hash:base64:5]'
+      }]
+
+    },
+
+    resolve: {
+      extensions: ['', '.js', '.jsx']
+    }
+
+});
+
 // Export
-module.exports = { development, production: development };
+module.exports = { development, production };
