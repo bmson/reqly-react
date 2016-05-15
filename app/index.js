@@ -1,142 +1,25 @@
-// Dependencies
+// Global dependencies
 const Webpack       = require('webpack');
 const WebpackServer = require('webpack-dev-server');
 const path          = require('path');
-const fs            = require('fs');
-const socket        = require('./socket');
+
+// Local dependencies
+const socket  = require('./components/socket');
+const symlink = require('./components/symlink');
+const server  = require('./components/server');
 
 // Get parent directory
 const parent = path.dirname(module.parent.filename);
 
-// Split path into filepath and filename
-const splitPath = (url) => {
+// Exposed API
+exports.socket  = socket;
+exports.symlink = symlink;
 
-  const lastIndex = url.lastIndexOf('/');
+exports.server = (port, options) => {
 
-  const filepath = url.substring(0, lastIndex);
-  const filename = url.substring(lastIndex + 1);
-
-  return { filepath, filename }
-}
-
-// Manipulate array
-const createArray = (value, fn) => {
-
-  const array = [].concat(value);
-  return array.map(item => fn.call(this, item));
-
-}
-
-// Get webpack options
-function getOptions(port, config) {
-
-  // Create hot module
-  var hotModule = new Webpack.HotModuleReplacementPlugin;
-
-  // Create server and hotloader
-  var devServer   = 'webpack-dev-server/client?http://localhost:' + port;
-  var syntaxError = 'webpack/hot/only-dev-server';
-
-  // Create entries
-  const entries = createArray(config.input, i => path.join(parent, i));
-  const entry = [devServer, syntaxError].concat(entries);
-
-  // Create output path
-  const output = splitPath(config.output);
-
-  // Create loaders
-  const includes = createArray(config.input, i => {
-    const input = splitPath(i);
-    return path.join(parent, input.filepath)
-  });
-
-  // Return config object
-  return {
-    entry: entry,
-
-    output: {
-      path: parent,
-      filename: output.filename
-    },
-
-    plugins: [hotModule],
-    devtool: 'eval',
-
-    module: {
-
-      loaders: [{
-        test: /\.js$/,
-        include: includes,
-        loaders: ['react-hot', 'babel']
-      },{
-        test: /\.jsx$/,
-        include: includes,
-        loaders: ['react-hot', 'babel']
-      },{
-        test: /\.css$/,
-        include: includes,
-        loader: 'style-loader!css-loader?modules&importLoaders=1&localIdentName=[local]-[hash:base64:5]'
-      }]
-
-    },
-
-    resolve: {
-      extensions: ['', '.js', '.jsx']
-    }
-  };
-
-}
-
-// Listen callback
-const connected = (port, error) => {
-
-  // Return error
-  if (error)
-    return console.error(err);
-
-    // Show success
-  console.log('Listening at http://localhost:' + port);
-
-}
-
-// Create socket connection
-exports.socket = socket.connect;
-
-// Create a symlink based on the url and name
-exports.symlink = function(url, name, modules = './node_modules/') {
-
-  // Split name
-  const output = splitPath(name);
-  const filepath = path.join(modules, output.filepath);
-
-  // Create directory
-  fs.mkdirSync(filepath);
-
-  // Get path of application relative to modules
-  const main = path.relative(filepath, url);
-
-  // Create a symlink
-  fs.symlink(main, path.join(modules,output.filepath, output.filename), e => {});
-
-}
-
-// Create server
-exports.server = function(port, config) {
-
-  // split path into filepath and filename
-  const output = splitPath(config.output);
-
-  // Setup webpack
-  var options = getOptions(port, config);
-  var webpack = Webpack(options);
-
-  // Create server
-  var webpackServer = new WebpackServer(webpack, {
-
-    contentBase: path.join(parent, output.filepath),
-    hot: true,
-    stats: { colors: true }
-
-  }).listen(port, 'localhost', error => connected(port, error));
+  if (options.main)
+    server.production(port, options, parent);
+  else
+    server.development(port, options, parent);
 
 }
