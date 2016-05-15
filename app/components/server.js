@@ -78,7 +78,7 @@ const production = (port, { input, main }, parent) => {
   });
 
   // Setup webpack
-  const settings = options.production({ filepath, filename, includes });
+  const settings = options.production({ entry: input, filepath, filename, includes });
   const compiler = webpack(settings);
 
   compiler.run((error, stats) => {

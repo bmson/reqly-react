@@ -39,7 +39,9 @@ const development = ({ entry, filepath, filename, includes }) => ({
 
 });
 
-const production = ({ filepath, filename, includes }) => ({
+const production = ({ entry, filepath, filename, includes }) => ({
+
+    entry: entry,
 
     output: {
       path: filepath,
@@ -51,11 +53,11 @@ const production = ({ filepath, filename, includes }) => ({
       loaders: [{
         test: /\.js$/,
         include: includes,
-        loaders: ['react-hot', 'babel']
+        loaders: ['babel']
       },{
         test: /\.jsx$/,
         include: includes,
-        loaders: ['react-hot', 'babel']
+        loaders: ['babel']
       },{
         test: /\.css$/,
         include: includes,
