@@ -8,7 +8,8 @@ const development = ({ entry, filepath, filename, includes }) => ({
 
     output: {
       path: filepath,
-      filename: filename
+      filename: filename,
+      libraryTarget: 'commonjs2'
     },
 
     plugins: [
