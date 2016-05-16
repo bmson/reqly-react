@@ -1,6 +1,6 @@
 {
   "name": "reqly-react",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "React helper to quickly run a server with Babelif and react hot-loader",
   "main": "app/index.js",
   "scripts": {
