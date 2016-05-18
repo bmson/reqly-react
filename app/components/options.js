@@ -49,6 +49,11 @@ const production = ({ entry, filepath, filename, includes }) => ({
       libraryTarget: 'umd'
     },
 
+    externals: {
+      'react': 'react',
+      'react-dom': 'react-dom'
+    },
+
     module: {
 
       loaders: [{
