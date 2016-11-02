@@ -27,7 +27,7 @@ reqly.socket('/', 8080);
 var reqly = require('reqly-react');
 
 // Compile source code and export
-reqly.connect(3333, {
+reqly.server(3333, {
   input: ["./src/example.jsx"],
   main: "./dist/bunld.js"
 });
