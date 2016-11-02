@@ -1,6 +1,14 @@
 # reqly react
 React helper to quickly run a server with Babelify and react hot-loader
 
+Add the following to `package.json`
+
+```json
+"babel": {
+  "presets": ["es2015", "react"]
+},
+```
+
 # build development
 ```javascript
 // Dependencies
@@ -29,6 +37,6 @@ var reqly = require('reqly-react');
 // Compile source code and export
 reqly.server(3333, {
   input: ["./src/example.jsx"],
-  main: "./dist/bunld.js"
+  main: "./dist/bundle.js"
 });
 ```
